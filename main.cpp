@@ -1,50 +1,38 @@
 #include <iostream>
-const unsigned MAX_ROWS = 10;
-const unsigned MAX_COLS = 10;
-
+#include "board.h"
+#include "boardBuilder.h"
 void gameMainMenu();
 void printMainMenu();
-void printRowSeparator(char separateSymbol);
-void printBoard(int boardEngine[MAX_ROWS][MAX_COLS]);
+
+void newGame(){
+  const unsigned BOARD_SIZE = 10;
+  const unsigned NAME_MAX_SIZE = 51;
+
+  char player1Name[NAME_MAX_SIZE] = "";
+  char player2Name[NAME_MAX_SIZE] = "";
+
+  std::cout << "Please enter player 1 nickname: ";
+  std::cin.getline(player1Name, NAME_MAX_SIZE);
+  std::cout << "Please enter player 2 nickname: ";
+  std::cin.getline(player2Name, NAME_MAX_SIZE);
+
+  int player1Board[BOARD_SIZE][BOARD_SIZE];
+  int player2Board[BOARD_SIZE][BOARD_SIZE];
+
+  system("cls");
+  std::cout << "Hello, " << player1Name << std::endl;
+  std::cout << "It's your turn to build a board.\n";
+  boardBuilderMenu(player1Board);
+
+  std::cout << "This is your current board:" << std::endl;
+  printBoard(player1Board);
+}
 
 int main() {
 
   gameMainMenu();
 
   return 0;
-}
-
-void printRowSeparator(char separateSymbol) {
-  for (int i = 0; i < 45; ++i) {
-    std::cout << separateSymbol;
-  }
-  std::cout << std::endl;
-}
-
-void printBoard() {
-  // Printing the initial row with letters (A-J)
-  printRowSeparator('-');
-  // Empty edge (calibration)
-  std::cout << "|   |";
-  for (int i = 0; i < 10; ++i) {
-    std::cout << " " << (char)('A' + i) << " |";
-  }
-  std::cout << std::endl;
-  printRowSeparator('-');
-
-  // Printing each row (first column is always a board index digit (0-9))
-  for (int row = 0; row < MAX_ROWS; ++row) {
-    std::cout << "|";
-    for (int col = 0; col < MAX_COLS + 1; ++col) {
-      if (col == 0) {
-        std::cout << " " << row << " |";
-      } else {
-        std::cout << " " << '~' << " |";
-      }
-    }
-    std::cout << std::endl;
-    printRowSeparator('-');
-  }
 }
 
 void printMainMenu() {
@@ -68,13 +56,19 @@ void selectOption() {
     switch (input) {
     case '1':
       /* TODO NEW GAME */
+      system("cls");
+      newGame();
+      isOptionValid = true;
       break;
     case '2':
       /* TODO Board Builder */
       system("cls");
-      printBoard();
+      int tempBoard[BOARD_SIZE][BOARD_SIZE];
+      boardBuilderMenu(tempBoard);
+      isOptionValid = true;
       break;
     case '3':
+      system("cls");
       return;
       break;
 
@@ -83,7 +77,7 @@ void selectOption() {
       printMainMenu();
       isOptionValid = false;
       std::cout << "Your option is invalid! \n"
-                   "Please enter an option [1-3]:"
+                   "Please enter a valid option [1-3]:"
                 << std::endl;
       break;
     }
