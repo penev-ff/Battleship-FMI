@@ -1,6 +1,6 @@
 #include <iostream>
-#include "board.h"
-#include "boardBuilder.h"
+#include "headers/board.h"
+#include "headers/boardBuilder.h"
 void gameMainMenu();
 void printMainMenu();
 
@@ -23,9 +23,6 @@ void newGame(){
   std::cout << "Hello, " << player1Name << std::endl;
   std::cout << "It's your turn to build a board.\n";
   boardBuilderMenu(player1Board);
-
-  std::cout << "This is your current board:" << std::endl;
-  printBoard(player1Board);
 }
 
 int main() {
