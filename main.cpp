@@ -1,6 +1,7 @@
 #include <iostream>
 #include "headers/board.h"
 #include "headers/boardBuilder.h"
+
 void gameMainMenu();
 void printMainMenu();
 
