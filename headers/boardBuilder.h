@@ -1,6 +1,7 @@
 #pragma once
 #include "board.h"
 #include <iostream>
+#include <limits>
 
 struct Coordinate {
   short row, col;
@@ -16,13 +17,12 @@ void buildBoard(int board[BOARD_SIZE][BOARD_SIZE]);
 void printBoardBuilderMenu();
 void boardBuilderMenu(int board[BOARD_SIZE][BOARD_SIZE]);
 void printShipsLoad(Ship ships[], const unsigned typesCount);
-bool isPositionValid(int board[BOARD_SIZE][BOARD_SIZE],
-                     Coordinate position, Ship selectedShip);
+bool isPositionValid(int board[BOARD_SIZE][BOARD_SIZE], Coordinate position,
+                     Ship selectedShip);
 void placeShip(int board[BOARD_SIZE][BOARD_SIZE], Ship ships[],
                const unsigned typesCount);
 
 void buildBoard(int board[BOARD_SIZE][BOARD_SIZE]) {
-  system("cls");
   std::cout << "Time to build now - TODO\n";
 
   unsigned typesCount = 4;
@@ -38,15 +38,15 @@ void buildBoard(int board[BOARD_SIZE][BOARD_SIZE]) {
     }
   }
 
-  std::cout << "This is your current board:" << std::endl;
-  printBoard(board);
-
   bool allShipsPlaced = false;
   do {
+    system("cls");
+    std::cout << "This is your current board:" << std::endl;
+    printBoard(board);
     std::cout << "\nSelect an option:\n"
               << "1. Place a ship\n"
               << "2. Edit a ship's position" << std::endl;
-
+    std::cout << "-> ";
     char nextOption;
     bool isNextOptionValid = false;
     do {
@@ -66,14 +66,14 @@ void buildBoard(int board[BOARD_SIZE][BOARD_SIZE]) {
       default:
         isNextOptionValid = false;
         std::cout << "Your option is invalid! \n"
-                     "Please enter a valid option [1-2]:"
-                  << std::endl;
+                     "Please enter a valid option [1-2]:";
         break;
       }
     } while (!isNextOptionValid);
 
-    // TODO allShipsPlaced = shipsCountLeft(ships, typesCount);
-
+    int totalShipsCount = ships[0].count + ships[1].count + 
+                          ships[2].count + ships[3].count;
+    allShipsPlaced = totalShipsCount <= 0;
   } while (!allShipsPlaced);
 }
 
@@ -128,63 +128,74 @@ void printShipsLoad(Ship ships[], const unsigned typesCount) {
   }
 }
 
-bool isPositionValid(int board[BOARD_SIZE][BOARD_SIZE],
-                     Coordinate position, Ship selectedShip){
-    std::cout << "You are trying to put a ship on:\n";
+bool isPositionValid(int board[BOARD_SIZE][BOARD_SIZE], Coordinate position,
+                     Ship selectedShip) {
 
-    std::cout << position.row << 'x' << position.col << ' ' << position.direction;
-    //isInsideBoard
-    enum direction {LEFT, RIGHT, UP, DOWN};
+  //Is ship outside of the board check
+  enum direction { LEFT, RIGHT, UP, DOWN };
 
-    switch (position.direction)
-    {
-    case LEFT:
-      if (position.col < selectedShip.size - 1)
-      {
-        return false;
-      } 
-      break;
-    case RIGHT:
-      if (position.col + (selectedShip.size - 1) > 9)
-      {
-        return false;
-      } 
-      break;
-    case UP:
-      if (position.row < selectedShip.size - 1)
-      {
-        return false;
-      } 
-      break;
-    case DOWN:
-      if (position.row + (selectedShip.size - 1) > 9)
-      {
-        return false;
-      } 
-      break;
-    default:
+  switch (position.direction) {
+  case LEFT:
+    if (position.col < selectedShip.size - 1) {
       return false;
-      break;
     }
+    break;
+  case RIGHT:
+    if (position.col + (selectedShip.size - 1) > 9) {
+      return false;
+    }
+    break;
+  case UP:
+    if (position.row < selectedShip.size - 1) {
+      return false;
+    }
+    break;
+  case DOWN:
+    if (position.row + (selectedShip.size - 1) > 9) {
+      return false;
+    }
+    break;
+  default:
+    return false;
+    break;
+  }
 
-    //Placing the ship after inside board check and ships collision check
-    for (size_t i = 0; i < selectedShip.size; ++i)
-    {
-      if (position.direction == LEFT)
-      {
-        board[position.row][position.col - i] = 1; 
-      } else if (position.direction == RIGHT){
-        board[position.row][position.col + i] = 1; 
-      } else if (position.direction == UP){
-        board[position.row - i][position.col] = 1; 
-      } else if (position.direction == DOWN){
-        board[position.row + i][position.col] = 1; 
+  //Other ships collision check
+  for (size_t i = 0; i < selectedShip.size; ++i) {
+    if (position.direction == LEFT) {
+      if (board[position.row][position.col - i] == 1) {
+        return false;
+      }
+    } else if (position.direction == RIGHT) {
+      if (board[position.row][position.col + i] == 1) {
+        return false;
+      }
+    } else if (position.direction == UP) {
+      if (board[position.row - i][position.col] == 1) {
+        return false;
+      }
+
+    } else if (position.direction == DOWN) {
+      if (board[position.row + i][position.col] == 1) {
+        return false;
       }
     }
-    return true;
+  }
+
+  // Placing the ship after inside board check and ships collision check
+  for (size_t i = 0; i < selectedShip.size; ++i) {
+    if (position.direction == LEFT) {
+      board[position.row][position.col - i] = 1;
+    } else if (position.direction == RIGHT) {
+      board[position.row][position.col + i] = 1;
+    } else if (position.direction == UP) {
+      board[position.row - i][position.col] = 1;
+    } else if (position.direction == DOWN) {
+      board[position.row + i][position.col] = 1;
+    }
+  }
+  return true;
 }
-
-
 
 void placeShip(int board[BOARD_SIZE][BOARD_SIZE], Ship ships[],
                const unsigned typesCount) {
@@ -264,9 +275,8 @@ void placeShip(int board[BOARD_SIZE][BOARD_SIZE], Ship ships[],
       std::cin.sync();
 
       if (directionChar < '0' || directionChar > '3') {
-        std::cout
-            << "Invalid input! Please enter a valid direction [0, 3]\n" 
-            << "(Left: 0, Right: 1, Up: 2, Down: 3): ";
+        std::cout << "Invalid input! Please enter a valid direction [0, 3]\n"
+                  << "(Left: 0, Right: 1, Up: 2, Down: 3): ";
       }
 
     } while (directionChar < '0' || directionChar > '3');
@@ -280,16 +290,18 @@ void placeShip(int board[BOARD_SIZE][BOARD_SIZE], Ship ships[],
 
     bool isPlaced = isPositionValid(board, position, ships[selectedId]);
 
-    if (isPlaced)
-    {
+    if (isPlaced) {
+      system("cls");
+      printBoard(board);
       std::cout << ships[selectedId].name << " placed successfully!\n";
+      ships[selectedId].count -= 1;
       isShipPlaced = true;
     } else {
       std::cout << "You can't place the selected ship on this position.\n";
       std::cout << "Choose another position to place it.\n";
     }
-    
-    std::cout << "Press Enter to Continue";
-    std::cin.ignore();
+
+    std::cout << "Press ENTER to continue... " << std::flush;
+    std::cin.ignore( std::numeric_limits <std::streamsize> ::max(), '\n' );
   } while (!isShipPlaced);
 }

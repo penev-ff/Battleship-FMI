@@ -1,30 +1,10 @@
 #include <iostream>
 #include "headers/board.h"
 #include "headers/boardBuilder.h"
+#include "headers/game.h"
 
 void gameMainMenu();
 void printMainMenu();
-
-void newGame(){
-  const unsigned BOARD_SIZE = 10;
-  const unsigned NAME_MAX_SIZE = 51;
-
-  char player1Name[NAME_MAX_SIZE] = "";
-  char player2Name[NAME_MAX_SIZE] = "";
-
-  std::cout << "Please enter player 1 nickname: ";
-  std::cin.getline(player1Name, NAME_MAX_SIZE);
-  std::cout << "Please enter player 2 nickname: ";
-  std::cin.getline(player2Name, NAME_MAX_SIZE);
-
-  int player1Board[BOARD_SIZE][BOARD_SIZE];
-  int player2Board[BOARD_SIZE][BOARD_SIZE];
-
-  system("cls");
-  std::cout << "Hello, " << player1Name << std::endl;
-  std::cout << "It's your turn to build a board.\n";
-  boardBuilderMenu(player1Board);
-}
 
 int main() {
 
@@ -51,6 +31,7 @@ void selectOption() {
   do {
     std::cin >> input;
     std::cin.sync();
+
     switch (input) {
     case '1':
       /* TODO NEW GAME */
@@ -83,6 +64,7 @@ void selectOption() {
 }
 
 void gameMainMenu() {
+  system("cls");
   printMainMenu();
   selectOption();
 }
