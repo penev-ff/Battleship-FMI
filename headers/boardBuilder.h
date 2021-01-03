@@ -3,6 +3,8 @@
 #include <iostream>
 #include <limits>
 
+enum direction { LEFT, RIGHT, UP, DOWN };
+
 struct Coordinate {
   short row, col;
   short direction;
@@ -17,8 +19,9 @@ void buildBoard(int board[BOARD_SIZE][BOARD_SIZE]);
 void printBoardBuilderMenu();
 void boardBuilderMenu(int board[BOARD_SIZE][BOARD_SIZE]);
 void printShipsLoad(Ship ships[], const unsigned typesCount);
-bool isPositionValid(int board[BOARD_SIZE][BOARD_SIZE], Coordinate position,
-                     Ship selectedShip);
+bool insideBoardCheck(const Coordinate position, const Ship selectedShip);
+bool positionValidation(int board[BOARD_SIZE][BOARD_SIZE], Coordinate position,
+                        Ship selectedShip);
 void placeShip(int board[BOARD_SIZE][BOARD_SIZE], Ship ships[],
                const unsigned typesCount);
 
@@ -71,8 +74,8 @@ void buildBoard(int board[BOARD_SIZE][BOARD_SIZE]) {
       }
     } while (!isNextOptionValid);
 
-    int totalShipsCount = ships[0].count + ships[1].count + 
-                          ships[2].count + ships[3].count;
+    int totalShipsCount =
+        ships[0].count + ships[1].count + ships[2].count + ships[3].count;
     allShipsPlaced = totalShipsCount <= 0;
   } while (!allShipsPlaced);
 }
@@ -128,12 +131,7 @@ void printShipsLoad(Ship ships[], const unsigned typesCount) {
   }
 }
 
-bool isPositionValid(int board[BOARD_SIZE][BOARD_SIZE], Coordinate position,
-                     Ship selectedShip) {
-
-  //Is ship outside of the board check
-  enum direction { LEFT, RIGHT, UP, DOWN };
-
+bool insideBoardCheck(const Coordinate position, const Ship selectedShip) {
   switch (position.direction) {
   case LEFT:
     if (position.col < selectedShip.size - 1) {
@@ -160,40 +158,267 @@ bool isPositionValid(int board[BOARD_SIZE][BOARD_SIZE], Coordinate position,
     break;
   }
 
-  //Other ships collision check
-  for (size_t i = 0; i < selectedShip.size; ++i) {
-    if (position.direction == LEFT) {
+  return true;
+}
+
+bool positionValidation(int board[BOARD_SIZE][BOARD_SIZE], Coordinate position,
+                        Ship selectedShip) {
+
+  // Is ship inside the board check
+  bool isInsideBoard = insideBoardCheck(position, selectedShip);
+
+  if (!isInsideBoard) {
+    return false;
+  }
+
+  switch (position.direction) {
+  case LEFT: {
+    // Check Right Bound
+    int shipStart = position.col;
+    if (shipStart < BOARD_SIZE - 1) {
+      if (board[position.row][shipStart + 1] == 1) {
+        return false;
+      }
+
+      if (position.row > 0) {
+        if (board[position.row - 1][shipStart + 1] == 1) {
+          return false;
+        }
+      }
+
+      if (position.row < BOARD_SIZE - 1) {
+        if (board[position.row + 1][shipStart + 1] == 1) {
+          return false;
+        }
+      }
+    }
+
+    // Check the two sides next to the ship
+    for (size_t i = 0; i < selectedShip.size; i++) {
       if (board[position.row][position.col - i] == 1) {
         return false;
       }
-    } else if (position.direction == RIGHT) {
+
+      if (position.row > 0) {
+        if (board[position.row - 1][position.col - i] == 1) {
+          return false;
+        }
+      }
+
+      if (position.row < BOARD_SIZE - 1) {
+        if (board[position.row + 1][position.col - i] == 1) {
+          return false;
+        }
+      }
+    }
+
+    // Check left bound
+    int shipEnd = position.col - selectedShip.size + 1;
+
+    if (shipEnd > 0) {
+      if (board[position.row][shipEnd - 1] == 1) {
+        return false;
+      }
+
+      if (position.row > 0) {
+        if (board[position.row - 1][shipEnd - 1] == 1) {
+          return false;
+        }
+      }
+      if (position.row < BOARD_SIZE - 1) {
+        if (board[position.row + 1][shipEnd - 1] == 1) {
+          return false;
+        }
+      }
+    }
+  } break;
+
+  case RIGHT: {
+    // Check Left Bound
+    int shipStart = position.col;
+    if (shipStart > 0) {
+      if (board[position.row][shipStart - 1] == 1) {
+        return false;
+      }
+
+      if (position.row > 0) {
+        if (board[position.row - 1][shipStart - 1] == 1) {
+          return false;
+        }
+      }
+      if (position.row < BOARD_SIZE - 1) {
+        if (board[position.row + 1][shipStart - 1] == 1) {
+          return false;
+        }
+      }
+    }
+
+    // Check the two sides next to the ship
+    for (size_t i = 0; i < selectedShip.size; i++) {
       if (board[position.row][position.col + i] == 1) {
         return false;
       }
-    } else if (position.direction == UP) {
+
+      if (position.row > 0) {
+        if (board[position.row - 1][position.col + i] == 1) {
+          return false;
+        }
+      }
+
+      if (position.row < BOARD_SIZE - 1) {
+        if (board[position.row + 1][position.col + i] == 1) {
+          return false;
+        }
+      }
+    }
+
+    // Check right bound
+    int shipEnd = position.col + selectedShip.size - 1;
+    if (shipEnd < BOARD_SIZE - 1) {
+      if (board[position.row][shipEnd + 1] == 1) {
+        return false;
+      }
+
+      if (position.row > 0) {
+        if (board[position.row - 1][shipEnd + 1] == 1) {
+          return false;
+        }
+      }
+
+      if (position.row < BOARD_SIZE - 1) {
+        if (board[position.row + 1][shipEnd + 1] == 1) {
+          return false;
+        }
+      }
+    }
+  } break;
+
+  case UP: {
+    // Check Lower Bound
+    int shipStart = position.row;
+    if (shipStart < BOARD_SIZE - 1) {
+      if (board[shipStart + 1][position.col] == 1) {
+        return false;
+      }
+
+      if (position.col > 0) {
+        if (board[shipStart + 1][position.col - 1] == 1) {
+          return false;
+        }
+      }
+      if (position.col < BOARD_SIZE - 1) {
+        if (board[shipStart + 1][position.col + 1] == 1) {
+          return false;
+        }
+      }
+    }
+
+    // Check the two sides next to the ship
+    for (size_t i = 0; i < selectedShip.size; i++) {
       if (board[position.row - i][position.col] == 1) {
         return false;
       }
 
-    } else if (position.direction == DOWN) {
+      if (position.col > 0) {
+        if (board[position.row - i][position.col - 1] == 1) {
+          return false;
+        }
+      }
+
+      if (position.col < BOARD_SIZE - 1) {
+        if (board[position.row - i][position.col + 1] == 1) {
+          return false;
+        }
+      }
+    }
+
+    // Check upper bound
+    int shipEnd = position.row - selectedShip.size + 1;
+    if (shipEnd > 0) {
+      if (board[shipEnd - 1][position.col] == 1) {
+        return false;
+      }
+
+      if (position.col > 0) {
+        if (board[shipEnd - 1][position.col - 1] == 1) {
+          return false;
+        }
+      }
+
+      if (position.col < BOARD_SIZE - 1) {
+        if (board[shipEnd - 1][position.col + 1] == 1) {
+          return false;
+        }
+      }
+    }
+  } break;
+
+  case DOWN: {
+    // Check Upper Bound
+    int shipStart = position.row;
+    if (shipStart > 0) {
+      if (board[shipStart - 1][position.col] == 1) {
+        return false;
+      }
+
+      if (position.col > 0) {
+        if (board[shipStart - 1][position.col - 1] == 1) {
+          return false;
+        }
+      }
+      if (position.col < BOARD_SIZE - 1) {
+        if (board[shipStart - 1][position.col + 1] == 1) {
+          return false;
+        }
+      }
+    }
+
+    // Check the two sides next to the ship
+    for (size_t i = 0; i < selectedShip.size; i++) {
       if (board[position.row + i][position.col] == 1) {
         return false;
       }
+
+      if (position.col > 0) {
+        if (board[position.row + i][position.col - 1] == 1) {
+          return false;
+        }
+      }
+
+      if (position.col < BOARD_SIZE - 1) {
+        if (board[position.row + i][position.col + 1] == 1) {
+          return false;
+        }
+      }
     }
+
+    // Check upper bound
+    int shipEnd = position.row + selectedShip.size - 1;
+
+    if (shipEnd < BOARD_SIZE - 1) {
+      if (board[shipEnd + 1][position.col] == 1) {
+        return false;
+      }
+
+      if (position.col > 0) {
+        if (board[shipEnd + 1][position.col - 1] == 1) {
+          return false;
+        }
+      }
+
+      if (position.col < BOARD_SIZE - 1) {
+        if (board[shipEnd + 1][position.col + 1] == 1) {
+          return false;
+        }
+      }
+    }
+  } break;
+  
+  default:
+    return false;
+    break;
   }
 
-  // Placing the ship after inside board check and ships collision check
-  for (size_t i = 0; i < selectedShip.size; ++i) {
-    if (position.direction == LEFT) {
-      board[position.row][position.col - i] = 1;
-    } else if (position.direction == RIGHT) {
-      board[position.row][position.col + i] = 1;
-    } else if (position.direction == UP) {
-      board[position.row - i][position.col] = 1;
-    } else if (position.direction == DOWN) {
-      board[position.row + i][position.col] = 1;
-    }
-  }
   return true;
 }
 
@@ -288,9 +513,23 @@ void placeShip(int board[BOARD_SIZE][BOARD_SIZE], Ship ships[],
     position.row = digitCoordinate;
     position.direction = direction;
 
-    bool isPlaced = isPositionValid(board, position, ships[selectedId]);
+    bool isPositionValid =
+        positionValidation(board, position, ships[selectedId]);
 
-    if (isPlaced) {
+    if (isPositionValid) {
+
+      for (size_t i = 0; i < ships[selectedId].size; ++i) {
+        if (position.direction == LEFT) {
+          board[position.row][position.col - i] = 1;
+        } else if (position.direction == RIGHT) {
+          board[position.row][position.col + i] = 1;
+        } else if (position.direction == UP) {
+          board[position.row - i][position.col] = 1;
+        } else if (position.direction == DOWN) {
+          board[position.row + i][position.col] = 1;
+        }
+      }
+
       system("cls");
       printBoard(board);
       std::cout << ships[selectedId].name << " placed successfully!\n";
@@ -302,6 +541,6 @@ void placeShip(int board[BOARD_SIZE][BOARD_SIZE], Ship ships[],
     }
 
     std::cout << "Press ENTER to continue... " << std::flush;
-    std::cin.ignore( std::numeric_limits <std::streamsize> ::max(), '\n' );
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
   } while (!isShipPlaced);
 }
