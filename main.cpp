@@ -1,7 +1,7 @@
 #include <iostream>
-#include "headers/board.h"
-#include "headers/boardBuilder.h"
-#include "headers/game.h"
+#include "./board/board.h"
+#include "./board/boardBuilder.h"
+#include "./game/game.h"
 
 void gameMainMenu();
 void printMainMenu();

@@ -2,6 +2,10 @@
 A console Battleship game - project for my 
 introduction to programming (practicum) course.
 
+##Important
+To compile the project successfully you should include and compile all the .cpp files.
+
+
 ## Description
 This is a simple console Battleship game I made for my practicum course.
 I haven't used object oriented programming principles because I wanted
