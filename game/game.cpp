@@ -3,6 +3,19 @@
 #include "../board/boardBuilder.h"
 #include "./game.h"
 
+void setDefaultPlayerName (char player1Name[], int id){
+    const unsigned defaultNameSize = 8;
+    const char defaultName[defaultNameSize] = "Player ";
+    
+    for (size_t i = 0; i < defaultNameSize; i++)
+    {
+      player1Name[i] = defaultName[i];
+    }
+    
+    player1Name[defaultNameSize - 1] = '0' + id;
+    player1Name[defaultNameSize] = '\0';
+}
+
 void newGame() {
   const unsigned NAME_MAX_SIZE = 51;
   char player1Name[NAME_MAX_SIZE] = "";
@@ -11,12 +24,23 @@ void newGame() {
   int player2Board[BOARD_SIZE][BOARD_SIZE];
 
   std::cout << "Please enter player 1 nickname: ";
+  
   std::cin.getline(player1Name, NAME_MAX_SIZE);
 
+  if (player1Name[0] == '\0')
+  {
+    setDefaultPlayerName(player1Name, 1);
+  }
+  
   greatAndBuild(player1Name, player1Board);
 
   std::cout << "Please enter player 2 nickname: ";
   std::cin.getline(player2Name, NAME_MAX_SIZE);
+
+  if (player2Name[0] == '\0')
+  {
+    setDefaultPlayerName(player2Name, 2);
+  }
 
   greatAndBuild(player2Name, player2Board);
 

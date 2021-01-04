@@ -2,9 +2,8 @@
 A console Battleship game - project for my 
 introduction to programming (practicum) course.
 
-##Important
+## Important
 To compile the project successfully you should include and compile all the .cpp files.
-
 
 ## Description
 This is a simple console Battleship game I made for my practicum course.
@@ -19,4 +18,3 @@ I might rework it in the future which would be a great progress tracking.
 The console application is currently working with all its features in
 the default Windows command-line interpreter (cmd).
 
-## Setup

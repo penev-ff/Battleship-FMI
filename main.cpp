@@ -26,7 +26,7 @@ void printMainMenu() {
 
 void selectOption() {
   std::cout << "Please select an option: ";
-  bool isOptionValid = false;
+  bool isOptionValid;
   char input;
   do {
     std::cin >> input;
@@ -49,7 +49,6 @@ void selectOption() {
     case '3':
       system("cls");
       return;
-      break;
 
     default:
       system("cls");

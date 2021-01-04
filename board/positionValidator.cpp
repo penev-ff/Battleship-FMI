@@ -1,5 +1,4 @@
 #include "./boardBuilder.h"
-#include "./board.h"
 #include "./positionValidator.h"
 
 bool insideBoardCheck(const Coordinate position, const Ship selectedShip) {
@@ -26,7 +25,6 @@ bool insideBoardCheck(const Coordinate position, const Ship selectedShip) {
     break;
   default:
     return false;
-    break;
   }
 
   return true;
@@ -287,7 +285,6 @@ bool positionValidation(int board[BOARD_SIZE][BOARD_SIZE], Coordinate position,
   
   default:
     return false;
-    break;
   }
 
   return true;
