@@ -57,4 +57,10 @@ void greatAndBuild(const char playerName[], int board[BOARD_SIZE][BOARD_SIZE]) {
 void game(const char player1Name[],
           int player1Board[BOARD_SIZE][BOARD_SIZE],
           const char player2Name[],
-          int player2Board[BOARD_SIZE][BOARD_SIZE]) {}
+          int player2Board[BOARD_SIZE][BOARD_SIZE]) {
+  std::cout << "The current two boards:\n";
+  std::cout << player1Name << '\n';
+  printBoard(player1Board);
+  std::cout << player2Name << '\n';
+  printBoard(player2Board);
+}

@@ -3,7 +3,7 @@
 
 enum direction { LEFT, RIGHT, UP, DOWN };
 
-struct Coordinate {
+struct Position {
   short row, col;
   short direction;
 };
@@ -15,4 +15,3 @@ struct Ship {
 
 void printBoardBuilderMenu();
 void boardBuilderMenu(int board[BOARD_SIZE][BOARD_SIZE]);
-

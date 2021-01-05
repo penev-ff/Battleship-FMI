@@ -1,7 +1,7 @@
-#include "./boardBuilder.h"
 #include "./positionValidator.h"
+#include "./boardBuilder.h"
 
-bool insideBoardCheck(const Coordinate position, const Ship selectedShip) {
+bool insideBoardCheck(const Position position, const Ship selectedShip) {
   switch (position.direction) {
   case LEFT:
     if (position.col < selectedShip.size - 1) {
@@ -30,7 +30,7 @@ bool insideBoardCheck(const Coordinate position, const Ship selectedShip) {
   return true;
 }
 
-bool positionValidation(int board[BOARD_SIZE][BOARD_SIZE], Coordinate position,
+bool positionValidation(int board[BOARD_SIZE][BOARD_SIZE], Position position,
                         Ship selectedShip) {
 
   // Is ship inside the board check
@@ -282,7 +282,7 @@ bool positionValidation(int board[BOARD_SIZE][BOARD_SIZE], Coordinate position,
       }
     }
   } break;
-  
+
   default:
     return false;
   }

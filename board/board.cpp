@@ -1,5 +1,13 @@
-#include <iostream>
 #include "./board.h"
+#include <iostream>
+
+void clearBoard(int board[BOARD_SIZE][BOARD_SIZE]) {
+  for (unsigned row = 0; row < BOARD_SIZE; ++row) {
+    for (unsigned col = 0; col < BOARD_SIZE; ++col) {
+      board[row][col] = 0;
+    }
+  }
+}
 
 void printRowSeparator(char separateSymbol) {
   for (int i = 0; i < 45; ++i) {
@@ -28,20 +36,19 @@ void printBoard(int board[BOARD_SIZE][BOARD_SIZE]) {
       } else {
         int placeHolder = board[row][col - 1];
         char dynamicSymbol;
-        switch (placeHolder)
-        {
+        switch (placeHolder) {
         case 0:
           dynamicSymbol = '~';
           break;
         case 1:
           dynamicSymbol = 'S';
-        break;
+          break;
         case 2:
           dynamicSymbol = '#';
-        break;
+          break;
         case -1:
           dynamicSymbol = 'X';
-        break;
+          break;
         default:
           dynamicSymbol = '?';
           break;

@@ -1,7 +1,7 @@
-#include <iostream>
-#include <limits>
 #include "./boardBuilder.h"
 #include "./buildBoard.h"
+#include <iostream>
+#include <limits>
 
 void boardBuilderMenu(int board[BOARD_SIZE][BOARD_SIZE]) {
 
@@ -44,4 +44,3 @@ void printBoardBuilderMenu() {
                "2. Load a board"
             << std::endl;
 }
-
