@@ -16,7 +16,7 @@ void printRowSeparator(char separateSymbol) {
   std::cout << std::endl;
 }
 
-void printBoard(int board[BOARD_SIZE][BOARD_SIZE]) {
+void printBoard(int board[BOARD_SIZE][BOARD_SIZE], bool isHid) {
   // Printing the initial row with letters (A-J)
   printRowSeparator('-');
   // Empty edge (calibration)
@@ -41,7 +41,11 @@ void printBoard(int board[BOARD_SIZE][BOARD_SIZE]) {
           dynamicSymbol = '~';
           break;
         case 1:
-          dynamicSymbol = 'S';
+          if (!isHid) {
+            dynamicSymbol = 'S';
+          } else {
+            dynamicSymbol = '~';
+          }
           break;
         case 2:
           dynamicSymbol = '#';
