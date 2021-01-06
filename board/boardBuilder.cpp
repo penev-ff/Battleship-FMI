@@ -22,8 +22,7 @@ void boardBuilderMenu(int board[BOARD_SIZE][BOARD_SIZE]) {
     case '2': {
       // TODO - Load from file
       bool isLoaded = loadBoard(board);
-      if (!isLoaded)
-      {
+      if (!isLoaded) {
         buildBoard(board);
       }
       isOptionValid = true;

@@ -34,11 +34,9 @@ bool printSavedBoards() {
 
 bool loadBoard(int board[BOARD_SIZE][BOARD_SIZE]) {
   bool loadPreBoardEntries = printSavedBoards();
-  if (!loadPreBoardEntries)
-  {
-      return false;
+  if (!loadPreBoardEntries) {
+    return false;
   }
-  
 
   std::cout << "Press ENTER to continue... " << std::flush;
   std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
