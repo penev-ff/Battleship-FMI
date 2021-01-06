@@ -1,4 +1,5 @@
 #include "./boardBuilder.h"
+#include "../preload/preBoardConfig.h"
 #include "./buildBoard.h"
 #include <iostream>
 #include <limits>
@@ -15,15 +16,18 @@ void boardBuilderMenu(int board[BOARD_SIZE][BOARD_SIZE]) {
     std::cin.sync();
     switch (option) {
     case '1':
-      // TODO - Build Now
       buildBoard(board);
       isOptionValid = true;
       break;
-    case '2':
+    case '2': {
       // TODO - Load from file
-      std::cout << "Time to load a board now - TODO";
+      bool isLoaded = loadBoard(board);
+      if (!isLoaded)
+      {
+        buildBoard(board);
+      }
       isOptionValid = true;
-      break;
+    } break;
 
     default:
       system("cls");

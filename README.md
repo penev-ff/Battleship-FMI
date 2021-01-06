@@ -4,6 +4,7 @@ introduction to programming (practicum) course.
 
 ## Important
 To compile the project successfully you should include and compile all the .cpp files.
+g++ main.cpp ./board/*.cpp ./game/*.cpp ./preload/*.cpp
 
 ## Description
 This is a simple console Battleship game I made for my practicum course.
