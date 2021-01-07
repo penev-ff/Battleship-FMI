@@ -84,10 +84,10 @@ void buildBoard(int board[BOARD_SIZE][BOARD_SIZE]) {
   std::cout << "1. Yes\n"
                "2. No\n"; 
 
-  char answer;
-  std::cin >> answer;
+  char saveOption;
+  std::cin >> saveOption;
   std::cin.sync();
-  if (answer == '1')
+  if (saveOption == '1')
   {
     saveBoard(shipsLog);
   }

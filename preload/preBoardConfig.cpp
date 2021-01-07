@@ -9,24 +9,58 @@
 
 std::vector<std::string> loadedEntries;
 const unsigned ALL_SHIPS_COUNT = 10;
-void saveBoard(std::vector<Log> shipsLog){
 
-  if (shipsLog.size() < ALL_SHIPS_COUNT)
+void saveBoard(std::vector<Log> shipsLog){
+  std::cout << "Enter board name:\n";
+  std::string boardName = "default";
+
+  do
   {
-    std::cout << "Save error: Your board is not full.\n";
-    std::cout << "You should place " 
-              << (ALL_SHIPS_COUNT - shipsLog.size()) << " more ships!" << std::endl; 
+    std::cin >> boardName;
+    if (boardName.size() <= 3)
+    {
+      std::cout << "Name size should be at least 3.\n";
+    }
+  } while (boardName.size() <= 3);
+  
+  boardName += ".txt";
+  
+  std::ofstream save;
+  save.open("preload/" + boardName, std::ios_base::app);
+
+  if (!save.is_open())
+  {
+    std::cout << "Error: cannot save this board.";
     std::cout << "Press ENTER to continue... " << std::flush;
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     return;
   }
-
-  for (auto &&log : shipsLog)
+  
+  for (auto log : shipsLog)
   {
-    std::cout << log.positionInfo.row << ' ' 
-              << log.positionInfo.col << ' ' 
-              << log.positionInfo.direction << std::endl;
+    std::string info = std::to_string(log.positionInfo.row) + " " +
+                       std::to_string(log.positionInfo.col) + " " +
+                       std::to_string(log.positionInfo.direction) + "\n";
+    save << info;
   }
+
+  save.close();
+
+  std::ofstream entries;
+  entries.open("preload/preBoardEntries.txt", std::ios::app);
+  if (!entries.is_open()) {
+    corruptedFileError();
+    return;
+  }
+
+  entries << "\n";
+  entries << boardName;
+
+  entries.close();
+
+  std::cout << "Board saved successfully!\n";
+  std::cout << "Press ENTER to continue... " << std::flush;
+  std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 }
 
 void corruptedFileError() {
@@ -54,6 +88,8 @@ bool loadEntries() {
       loadedEntries.push_back(boardEntrie);
     }
   }
+
+  entries.close();
   return true;
 }
 
