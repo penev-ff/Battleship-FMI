@@ -4,5 +4,5 @@
 
 void saveBoard(std::vector<Log> shipsLog);
 bool loadEntries();
-void corruptedFileError();
+void corruptedFileErrors(int errorCode);
 bool loadBoard(int board[BOARD_SIZE][BOARD_SIZE]);
