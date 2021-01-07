@@ -1,5 +1,6 @@
 #include "./preBoardConfig.h"
 #include "../board/board.h"
+#include "../board/buildBoard.h"
 #include <fstream>
 #include <iostream>
 #include <limits>
@@ -7,6 +8,26 @@
 #include <vector>
 
 std::vector<std::string> loadedEntries;
+const unsigned ALL_SHIPS_COUNT = 10;
+void saveBoard(std::vector<Log> shipsLog){
+
+  if (shipsLog.size() < ALL_SHIPS_COUNT)
+  {
+    std::cout << "Save error: Your board is not full.\n";
+    std::cout << "You should place " 
+              << (ALL_SHIPS_COUNT - shipsLog.size()) << " more ships!" << std::endl; 
+    std::cout << "Press ENTER to continue... " << std::flush;
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    return;
+  }
+
+  for (auto &&log : shipsLog)
+  {
+    std::cout << log.positionInfo.row << ' ' 
+              << log.positionInfo.col << ' ' 
+              << log.positionInfo.direction << std::endl;
+  }
+}
 
 void corruptedFileError() {
   std::cout << "Error: Your preBoardEntries file is corrupted." << std::endl;
@@ -75,7 +96,7 @@ bool loadBoard(int board[BOARD_SIZE][BOARD_SIZE]) {
   {
     return false;
   }
-  
+
 
   std::cout << "Board loaded successfully!" << std::endl;
   std::cout << "Press ENTER to continue... " << std::flush;

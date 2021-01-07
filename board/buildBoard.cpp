@@ -1,5 +1,6 @@
 #include "buildBoard.h"
 #include "positionValidator.h"
+#include "../preload/preBoardConfig.h"
 #include <iostream>
 #include <limits>
 #include <vector>
@@ -46,7 +47,6 @@ void buildBoard(int board[BOARD_SIZE][BOARD_SIZE]) {
         isNextOptionValid = true;
         break;
       case '2':
-        // TODO - edit ship's position
         if (shipsLog.size() > 0) {
           editShip(board);
         } else {
@@ -78,6 +78,20 @@ void buildBoard(int board[BOARD_SIZE][BOARD_SIZE]) {
         ships[0].count + ships[1].count + ships[2].count + ships[3].count;
     allShipsPlaced = totalShipsCount <= 0;
   } while (!allShipsPlaced);
+
+  system("cls");
+  std::cout << "Do you want to save this board?\n";
+  std::cout << "1. Yes\n"
+               "2. No\n"; 
+
+  char answer;
+  std::cin >> answer;
+  std::cin.sync();
+  if (answer == '1')
+  {
+    saveBoard(shipsLog);
+  }
+  
 }
 
 void printShipsLoad(Ship ships[], const unsigned typesCount) {
@@ -91,6 +105,17 @@ void printShipsLoad(Ship ships[], const unsigned typesCount) {
 
 void placeShip(int board[BOARD_SIZE][BOARD_SIZE], Ship ships[],
                const unsigned typesCount) {
+
+  char letterCoordinate, digitCoordinateChar, directionChar;
+  int digitCoordinate;
+  Position position;
+
+  bool isShipPlaced = false;
+  bool reselect = false;
+
+  do
+  {
+  reselect = false;
   system("cls");
   printBoard(board);
   printShipsLoad(ships, typesCount);
@@ -101,6 +126,7 @@ void placeShip(int board[BOARD_SIZE][BOARD_SIZE], Ship ships[],
   std::cout << "Select 5 if you want to return to board menu.\n";
   std::cout << "Select a ship's No. to place on the board:\n";
   std::cout << "-> ";
+
   do {
     std::cin >> inputShipId;
     std::cin.sync();
@@ -126,9 +152,7 @@ void placeShip(int board[BOARD_SIZE][BOARD_SIZE], Ship ships[],
 
   } while (!isIdValid);
 
-  bool isShipPlaced = false;
 
-  do {
     system("cls");
     printBoard(board);
 
@@ -136,13 +160,19 @@ void placeShip(int board[BOARD_SIZE][BOARD_SIZE], Ship ships[],
               << " with size " << ships[selectedId].size << "\n";
 
     std::cout << "Enter board coordinates to place it:\n";
-    Position position;
+    std::cout << "Enter Q to quit.\n";
 
-    char letterCoordinate;
     std::cout << "Capital letter: ";
+
     do {
       std::cin >> letterCoordinate;
       std::cin.sync();
+
+      if (letterCoordinate == 'Q')
+      {
+        reselect = true; 
+        break;
+      }
 
       if (letterCoordinate < 'A' || letterCoordinate > 'J') {
         std::cout
@@ -151,7 +181,12 @@ void placeShip(int board[BOARD_SIZE][BOARD_SIZE], Ship ships[],
 
     } while (letterCoordinate < 'A' || letterCoordinate > 'J');
 
-    char digitCoordinateChar;
+    if (reselect)
+    {
+      continue;
+    }
+    
+    digitCoordinateChar;
     std::cout << "Digit: ";
     do {
       std::cin >> digitCoordinateChar;
@@ -163,10 +198,10 @@ void placeShip(int board[BOARD_SIZE][BOARD_SIZE], Ship ships[],
 
     } while (digitCoordinateChar < '0' || digitCoordinateChar > '9');
 
-    int digitCoordinate = digitCoordinateChar - '0';
+    digitCoordinate = digitCoordinateChar - '0';
 
     std::cout << "Enter a direction (Left: 0, Right: 1, Up: 2, Down: 3): ";
-    char directionChar;
+    directionChar;
     do {
       std::cin >> directionChar;
       std::cin.sync();
@@ -212,7 +247,6 @@ void placeShip(int board[BOARD_SIZE][BOARD_SIZE], Ship ships[],
       isShipPlaced = true;
     } else {
       std::cout << "You can't place the selected ship on this position.\n";
-      std::cout << "Choose another position to place it.\n";
     }
 
     std::cout << "Press ENTER to continue... " << std::flush;

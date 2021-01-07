@@ -1,6 +1,7 @@
 #pragma once
 #include "boardBuilder.h"
 
+
 struct Log {
   Position positionInfo;
   Ship shipInfo;
