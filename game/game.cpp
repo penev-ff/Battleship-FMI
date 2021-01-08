@@ -58,6 +58,9 @@ void showAttackMessage(int msgCode) {
   case 1:
     std::cout << "You missed. Better luck next time!\n";
     break;
+  case 2:
+    std::cout << "You hit your opponent!\n";
+    break;
 
   default:
     break;
@@ -76,58 +79,79 @@ void showMyBoard(char currentPlayer[],
   std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 }
 
-void attack(char currentPlayer[], int opponentBoard[BOARD_SIZE][BOARD_SIZE]) {
-  system("cls");
-  std::cout << currentPlayer << " it's your turn to attack.\n";
-  std::cout << "Your opponent board (hid):" << std::endl;
-  const bool isHid = true;
-  printBoard(opponentBoard, isHid);
-  std::cout << "Q - if you want to return:\n";
-  std::cout << "Enter coordinates you want to attack:\n";
-  char letterCoordinateChar, digitCoordinateChar;
-  do {
-    std::cout << "Capital letter: ";
-    std::cin >> letterCoordinateChar;
-    std::cin.sync();
+bool attack(char currentPlayer[], int opponentBoard[BOARD_SIZE][BOARD_SIZE]) {
 
-    if (letterCoordinateChar == 'Q') {
-      return;
-    }
-
-    if (letterCoordinateChar < 'A' || letterCoordinateChar > 'J') {
-      std::cout
-          << "Invalid input! Please enter a valid capital letter [A, J]: ";
-    }
-
-  } while (letterCoordinateChar < 'A' || letterCoordinateChar > 'J');
+  bool hit = false;
 
   do {
-    std::cout << "Digit: ";
-    std::cin >> digitCoordinateChar;
-    std::cin.sync();
-
-    if (digitCoordinateChar < '0' || digitCoordinateChar > '9') {
-      std::cout << "Invalid input! Please enter a valid digit [0, 9]: ";
-    }
-
-  } while (digitCoordinateChar < '0' || digitCoordinateChar > '9');
-
-  int attackRow = digitCoordinateChar - '0';
-  int attackCol = letterCoordinateChar - 'A';
-
-  if (opponentBoard[attackRow][attackCol] == 0) {
     system("cls");
-    opponentBoard[attackRow][attackCol] = -1;
+    std::cout << currentPlayer << " it's your turn to attack.\n";
     std::cout << "Your opponent board (hid):" << std::endl;
+    const bool isHid = true;
     printBoard(opponentBoard, isHid);
-    showAttackMessage(1);
-    return;
-  }
+    std::cout << "Q - if you want to return:\n";
+
+    std::cout << "Enter coordinates you want to attack:\n";
+    char letterCoordinateChar, digitCoordinateChar;
+    do {
+      std::cout << "Capital letter: ";
+      std::cin >> letterCoordinateChar;
+      std::cin.sync();
+
+      if (letterCoordinateChar == 'Q') {
+        return false;
+      }
+
+      if (letterCoordinateChar < 'A' || letterCoordinateChar > 'J') {
+        std::cout
+            << "Invalid input! Please enter a valid capital letter [A, J]: ";
+      }
+
+    } while (letterCoordinateChar < 'A' || letterCoordinateChar > 'J');
+
+    do {
+      std::cout << "Digit: ";
+      std::cin >> digitCoordinateChar;
+      std::cin.sync();
+
+      if (digitCoordinateChar < '0' || digitCoordinateChar > '9') {
+        std::cout << "Invalid input! Please enter a valid digit [0, 9]: ";
+      }
+
+    } while (digitCoordinateChar < '0' || digitCoordinateChar > '9');
+
+    int attackRow = digitCoordinateChar - '0';
+    int attackCol = letterCoordinateChar - 'A';
+
+    if (opponentBoard[attackRow][attackCol] == 0) {
+      system("cls");
+      opponentBoard[attackRow][attackCol] = -1;
+      std::cout << "Your opponent board (hid):" << std::endl;
+      printBoard(opponentBoard, isHid);
+      showAttackMessage(1);
+      return true;
+    }
+
+    if (opponentBoard[attackRow][attackCol] == 1) {
+      system("cls");
+      opponentBoard[attackRow][attackCol] = 2;
+      std::cout << "Your opponent board (hid):" << std::endl;
+      printBoard(opponentBoard, isHid);
+      showAttackMessage(2);
+      hit = true;
+    }
+  } while (hit);
+  return true;
 }
 
 void playTurn(char currentPlayer[], int playerBoard[BOARD_SIZE][BOARD_SIZE],
               int opponentBoard[BOARD_SIZE][BOARD_SIZE]) {
-  system("cls");
+
+  bool finishedTurn = false;
+
+  do
+  {
+    system("cls");
   char option;
   do {
     std::cout << currentPlayer << " it's your turn to attack.\n";
@@ -147,9 +171,11 @@ void playTurn(char currentPlayer[], int playerBoard[BOARD_SIZE][BOARD_SIZE],
     showMyBoard(currentPlayer, playerBoard);
     break;
   case '2':
-    attack(currentPlayer, opponentBoard);
+    finishedTurn = attack(currentPlayer, opponentBoard);
     break;
   }
+  } while (!finishedTurn);
+        
 }
 
 void game(char player1Name[], int player1Board[BOARD_SIZE][BOARD_SIZE],
@@ -160,6 +186,5 @@ void game(char player1Name[], int player1Board[BOARD_SIZE][BOARD_SIZE],
   do {
     playTurn(player1Name, player1Board, player2Board);
     playTurn(player2Name, player2Board, player1Board);
-    // gameOver = isGameOver(player1Board, player2Board);
   } while (!gameOver);
 }
