@@ -64,6 +64,54 @@ bool isGameOver(int board[BOARD_SIZE][BOARD_SIZE]) {
   return true;
 }
 
+bool isShipSank(int opponentBoard[BOARD_SIZE][BOARD_SIZE], int attackRow,
+                int attackCol) {
+  for (int checkColR = attackCol + 1; checkColR <= 9; checkColR++) {
+    int toCheck = opponentBoard[attackRow][checkColR];
+    if (toCheck == 0 || toCheck == -1) {
+      break;
+    }
+    if (toCheck == 1) {
+      return false;
+    }
+  }
+
+  for (int checkColL = attackCol - 1; checkColL >= 0; checkColL--) {
+    int toCheck = opponentBoard[attackRow][checkColL];
+    if (toCheck == 0 || toCheck == -1) {
+      break;
+    }
+
+    if (toCheck == 1) {
+      return false;
+    }
+  }
+
+  for (int checkRowU = attackRow - 1; checkRowU >= 0; checkRowU--) {
+    int toCheck = opponentBoard[checkRowU][attackCol];
+    if (toCheck == 0 || toCheck == -1) {
+      break;
+    }
+
+    if (toCheck == 1) {
+      return false;
+    }
+  }
+
+  for (int checkRowD = attackRow + 1; checkRowD <= 9; checkRowD++) {
+    int toCheck = opponentBoard[checkRowD][attackCol];
+    if (toCheck == 0 || toCheck == -1) {
+      break;
+    }
+
+    if (toCheck == 1) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
 void showAttackMessage(int msgCode) {
   switch (msgCode) {
   case 1:
@@ -71,6 +119,9 @@ void showAttackMessage(int msgCode) {
     break;
   case 2:
     std::cout << "You hit your opponent!\n";
+    break;
+  case 3:
+    std::cout << "You sank a ship!\n";
     break;
 
   default:
@@ -106,7 +157,6 @@ bool attack(char currentPlayer[], int opponentBoard[BOARD_SIZE][BOARD_SIZE]) {
   do {
     printBoardToAttack(currentPlayer, opponentBoard);
     char opt = '2';
-
     if (hit) {
       std::cout << "Last time you hit your opponent on "
                 << (char)('A' + lastHitCol) << lastHitRow << "\n";
@@ -170,6 +220,7 @@ bool attack(char currentPlayer[], int opponentBoard[BOARD_SIZE][BOARD_SIZE]) {
       } while (!isValid);
 
     } else {
+
       std::cout << "Enter coordinates you want to attack:\n";
       char letterCoordinateChar, digitCoordinateChar;
       std::cout << "Capital letter: ";
@@ -199,7 +250,9 @@ bool attack(char currentPlayer[], int opponentBoard[BOARD_SIZE][BOARD_SIZE]) {
       attackCol = letterCoordinateChar - 'A';
     }
 
-    if (opponentBoard[attackRow][attackCol] == 0) {
+    int coordinateData = opponentBoard[attackRow][attackCol];
+
+    if (coordinateData == 0) {
       system("cls");
       opponentBoard[attackRow][attackCol] = -1;
       std::cout << "Your opponent board (hid):" << std::endl;
@@ -208,19 +261,26 @@ bool attack(char currentPlayer[], int opponentBoard[BOARD_SIZE][BOARD_SIZE]) {
       return true;
     }
 
-    if (opponentBoard[attackRow][attackCol] == 1) {
+    if (coordinateData == 1) {
       system("cls");
       opponentBoard[attackRow][attackCol] = 2;
       std::cout << "Your opponent board (hid):" << std::endl;
       printBoard(opponentBoard, true);
-      showAttackMessage(2);
+      bool shipSank = isShipSank(opponentBoard, attackRow, attackCol);
+      if (shipSank) {
+        showAttackMessage(3);
+        return false;
+      } else {
+        showAttackMessage(2);
+      }
+
       lastHitRow = attackRow;
       lastHitCol = attackCol;
       hit = true;
     }
 
-    if (opponentBoard[attackRow][attackCol] == 2) {
-      hit = true;
+    if (coordinateData == 2 || coordinateData == -1) {
+      return false;
     }
 
   } while (hit);
@@ -252,26 +312,35 @@ void playTurn(char currentPlayer[], int playerBoard[BOARD_SIZE][BOARD_SIZE],
       finishedTurn = attack(currentPlayer, opponentBoard);
       break;
     }
+
+    if (isGameOver(opponentBoard)) {
+      return;
+    }
+
   } while (!finishedTurn);
+}
+
+void gameOverMessage(char winner[]) {
+  system("cls");
+  std::cout << "Game over! " << winner
+            << " sank all the ships and won the game.\n";
 }
 
 void game(char player1Name[], int player1Board[BOARD_SIZE][BOARD_SIZE],
           char player2Name[], int player2Board[BOARD_SIZE][BOARD_SIZE]) {
 
-  bool gameOver;
+  bool gameOver = false;
 
   do {
     playTurn(player1Name, player1Board, player2Board);
     if (isGameOver(player2Board)) {
       gameOver = true;
-      std::cout << "Game over! " << player1Name
-                << " sank all the ships and won the game.\n";
+      gameOverMessage(player1Name);
     }
     playTurn(player2Name, player2Board, player1Board);
     if (isGameOver(player1Board)) {
       gameOver = true;
-      std::cout << "Game over! " << player2Name
-                << " sank all the ships and won the game.\n";
+      gameOverMessage(player2Name);
     }
   } while (!gameOver);
 

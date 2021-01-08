@@ -12,7 +12,7 @@ Ship ships[ShipTypesCount] = {{"Cruiser", 6, 1},
                               {"Submarine", 3, 3},
                               {"Destroyer", 2, 4}};
 
-void reloadShips(){
+void reloadShips() {
   ships[0].count = 1;
   ships[1].count = 2;
   ships[2].count = 3;

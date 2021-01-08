@@ -1,6 +1,6 @@
 #pragma once
-#include <vector>
 #include "../board/buildBoard.h"
+#include <vector>
 
 void saveBoard(std::vector<Log> shipsLog);
 bool loadEntries();
