@@ -1,5 +1,4 @@
 #include "./game.h"
-#include "../board/board.h"
 #include "../board/boardBuilder.h"
 #include <iostream>
 #include <limits>
@@ -178,22 +177,22 @@ bool attack(char currentPlayer[], int opponentBoard[BOARD_SIZE][BOARD_SIZE]) {
         do {
           std::cout << "Last hit coordinate: " << (char)('A' + lastHitCol)
                     << lastHitRow << std::endl;
-          std::cout << "Enter direction l/r/u/d: ";
+          std::cout << "Enter direction L/R/U/D: ";
           std::cin >> direction;
           std::cin.sync();
-          isDirectionValid = direction != 'l' || direction != 'r' ||
-                             direction != 'u' || direction != 'd';
+          isDirectionValid = direction != 'L' || direction != 'R' ||
+                             direction != 'U' || direction != 'D';
         } while (!isDirectionValid);
 
         switch (direction) {
-        case 'l':
+        case 'L':
           attackRow = lastHitRow;
           if (lastHitCol - 1 >= 0) {
             attackCol = lastHitCol - 1;
             isValid = true;
           }
           break;
-        case 'r':
+        case 'R':
           attackRow = lastHitRow;
 
           if (lastHitCol + 1 <= 9) {
@@ -201,14 +200,14 @@ bool attack(char currentPlayer[], int opponentBoard[BOARD_SIZE][BOARD_SIZE]) {
             isValid = true;
           }
           break;
-        case 'u':
+        case 'U':
           attackCol = lastHitCol;
           if (lastHitRow - 1 >= 0) {
             attackRow = lastHitRow - 1;
             isValid = true;
           }
           break;
-        case 'd':
+        case 'D':
           attackCol = lastHitCol;
           if (lastHitRow + 1 <= 9) {
             attackRow = lastHitRow + 1;

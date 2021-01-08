@@ -1,5 +1,4 @@
 #include "./positionValidator.h"
-#include "./boardBuilder.h"
 
 bool insideBoardCheck(const Position position, const Ship selectedShip) {
   switch (position.direction) {

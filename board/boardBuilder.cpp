@@ -1,8 +1,6 @@
 #include "./boardBuilder.h"
 #include "../preload/preBoardConfig.h"
-#include "./buildBoard.h"
 #include <iostream>
-#include <limits>
 
 void boardBuilderMenu(int board[BOARD_SIZE][BOARD_SIZE]) {
 
