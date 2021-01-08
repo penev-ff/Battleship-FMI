@@ -3,3 +3,4 @@ SAMPLE.txt
 SMP_2.txt
 smpBoard_3.txt
 BoardBuilderTest.txt
+Fitipaldi.txt

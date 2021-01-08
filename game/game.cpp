@@ -335,6 +335,7 @@ void game(char player1Name[], int player1Board[BOARD_SIZE][BOARD_SIZE],
     if (isGameOver(player2Board)) {
       gameOver = true;
       gameOverMessage(player1Name);
+      break;
     }
     playTurn(player2Name, player2Board, player1Board);
     if (isGameOver(player1Board)) {
