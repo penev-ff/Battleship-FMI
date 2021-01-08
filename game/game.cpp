@@ -16,7 +16,7 @@ void setDefaultPlayerName(char player1Name[], int id) {
   player1Name[defaultNameSize] = '\0';
 }
 
-void greatAndBuild(char playerName[], int board[BOARD_SIZE][BOARD_SIZE]) {
+void greetAndBuild(char playerName[], int board[BOARD_SIZE][BOARD_SIZE]) {
   system("cls");
   std::cout << "Hello, " << playerName << std::endl;
   std::cout << "It's your turn to build a board.\n";
@@ -38,7 +38,7 @@ void newGame() {
     setDefaultPlayerName(player1Name, 1);
   }
 
-  greatAndBuild(player1Name, player1Board);
+  greetAndBuild(player1Name, player1Board);
 
   system("cls");
   std::cout << "Please enter player 2 nickname: ";
@@ -48,9 +48,20 @@ void newGame() {
     setDefaultPlayerName(player2Name, 2);
   }
 
-  greatAndBuild(player2Name, player2Board);
+  greetAndBuild(player2Name, player2Board);
 
   game(player1Name, player1Board, player2Name, player2Board);
+}
+
+bool isGameOver(int board[BOARD_SIZE][BOARD_SIZE]) {
+  for (unsigned row = 0; row < BOARD_SIZE; row++) {
+    for (unsigned col = 0; col < BOARD_SIZE; col++) {
+      if (board[row][col] == 1) {
+        return false;
+      }
+    }
+  }
+  return true;
 }
 
 void showAttackMessage(int msgCode) {
@@ -207,6 +218,11 @@ bool attack(char currentPlayer[], int opponentBoard[BOARD_SIZE][BOARD_SIZE]) {
       lastHitCol = attackCol;
       hit = true;
     }
+
+    if (opponentBoard[attackRow][attackCol] == 2) {
+      hit = true;
+    }
+
   } while (hit);
   return true;
 }
@@ -246,6 +262,19 @@ void game(char player1Name[], int player1Board[BOARD_SIZE][BOARD_SIZE],
 
   do {
     playTurn(player1Name, player1Board, player2Board);
+    if (isGameOver(player2Board)) {
+      gameOver = true;
+      std::cout << "Game over! " << player1Name
+                << " sank all the ships and won the game.\n";
+    }
     playTurn(player2Name, player2Board, player1Board);
+    if (isGameOver(player1Board)) {
+      gameOver = true;
+      std::cout << "Game over! " << player2Name
+                << " sank all the ships and won the game.\n";
+    }
   } while (!gameOver);
+
+  std::cout << "Press ENTER to exit... " << std::flush;
+  std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 }

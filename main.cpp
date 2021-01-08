@@ -34,13 +34,11 @@ void selectOption() {
 
     switch (input) {
     case '1':
-      /* TODO NEW GAME */
       system("cls");
       newGame();
       isOptionValid = true;
       break;
     case '2':
-      /* TODO Board Builder */
       system("cls");
       int tempBoard[BOARD_SIZE][BOARD_SIZE];
       boardBuilderMenu(tempBoard);

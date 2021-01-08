@@ -1,6 +1,6 @@
 #include "buildBoard.h"
-#include "positionValidator.h"
 #include "../preload/preBoardConfig.h"
+#include "positionValidator.h"
 #include <iostream>
 #include <limits>
 #include <vector>
@@ -12,13 +12,17 @@ Ship ships[ShipTypesCount] = {{"Cruiser", 6, 1},
                               {"Submarine", 3, 3},
                               {"Destroyer", 2, 4}};
 
-void buildBoard(int board[BOARD_SIZE][BOARD_SIZE]) {
-
-  shipsLog.clear();
+void reloadShips(){
   ships[0].count = 1;
   ships[1].count = 2;
   ships[2].count = 3;
   ships[3].count = 4;
+}
+
+void buildBoard(int board[BOARD_SIZE][BOARD_SIZE]) {
+
+  shipsLog.clear();
+  reloadShips();
 
   // Fill empty board cells with '~'.
   clearBoard(board);
@@ -59,10 +63,7 @@ void buildBoard(int board[BOARD_SIZE][BOARD_SIZE]) {
       case '3':
         clearBoard(board);
         shipsLog.clear();
-        ships[0].count = 1;
-        ships[1].count = 2;
-        ships[2].count = 3;
-        ships[3].count = 4;
+        reloadShips();
         isNextOptionValid = true;
         break;
 
@@ -82,16 +83,14 @@ void buildBoard(int board[BOARD_SIZE][BOARD_SIZE]) {
   system("cls");
   std::cout << "Do you want to save this board?\n";
   std::cout << "1. Yes\n"
-               "2. No\n"; 
+               "2. No\n";
 
   char saveOption;
   std::cin >> saveOption;
   std::cin.sync();
-  if (saveOption == '1')
-  {
+  if (saveOption == '1') {
     saveBoard(shipsLog);
   }
-  
 }
 
 void printShipsLoad(Ship ships[], const unsigned typesCount) {
@@ -113,45 +112,44 @@ void placeShip(int board[BOARD_SIZE][BOARD_SIZE], Ship ships[],
   bool isShipPlaced = false;
   bool reselect = false;
 
-  do
-  {
-  reselect = false;
-  system("cls");
-  printBoard(board);
-  printShipsLoad(ships, typesCount);
-
-  char inputShipId;
-  short selectedId;
-  bool isIdValid;
-  std::cout << "Select 5 if you want to return to board menu.\n";
-  std::cout << "Select a ship's No. to place on the board:\n";
-  std::cout << "-> ";
-
   do {
-    std::cin >> inputShipId;
-    std::cin.sync();
+    reselect = false;
+    system("cls");
+    printBoard(board);
+    printShipsLoad(ships, typesCount);
 
-    if (inputShipId == '5') {
-      return;
-    }
+    char inputShipId;
+    short selectedId;
+    bool isIdValid;
+    std::cout << "Select 5 if you want to return to board menu.\n";
+    std::cout << "Select a ship's No. to place on the board:\n";
+    std::cout << "-> ";
 
-    isIdValid = true;
+    do {
+      std::cin >> inputShipId;
+      std::cin.sync();
 
-    if (inputShipId < '1' || inputShipId > '4') {
-      std::cout << "\nInvalid option selected. Please select a valid one "
-                   "[1,5]:";
-      isIdValid = false;
-    } else {
-      selectedId = (inputShipId - 1) - '0';
-      if (ships[selectedId].count <= 0) {
-        std::cout << "\nThere are no " << ships[selectedId].name << "s left.\n";
-        std::cout << "Please select another one:";
-        isIdValid = false;
+      if (inputShipId == '5') {
+        return;
       }
-    }
 
-  } while (!isIdValid);
+      isIdValid = true;
 
+      if (inputShipId < '1' || inputShipId > '4') {
+        std::cout << "\nInvalid option selected. Please select a valid one "
+                     "[1,5]:";
+        isIdValid = false;
+      } else {
+        selectedId = (inputShipId - 1) - '0';
+        if (ships[selectedId].count <= 0) {
+          std::cout << "\nThere are no " << ships[selectedId].name
+                    << "s left.\n";
+          std::cout << "Please select another one:";
+          isIdValid = false;
+        }
+      }
+
+    } while (!isIdValid);
 
     system("cls");
     printBoard(board);
@@ -168,9 +166,8 @@ void placeShip(int board[BOARD_SIZE][BOARD_SIZE], Ship ships[],
       std::cin >> letterCoordinate;
       std::cin.sync();
 
-      if (letterCoordinate == 'Q')
-      {
-        reselect = true; 
+      if (letterCoordinate == 'Q') {
+        reselect = true;
         break;
       }
 
@@ -181,11 +178,10 @@ void placeShip(int board[BOARD_SIZE][BOARD_SIZE], Ship ships[],
 
     } while (letterCoordinate < 'A' || letterCoordinate > 'J');
 
-    if (reselect)
-    {
+    if (reselect) {
       continue;
     }
-    
+
     digitCoordinateChar;
     std::cout << "Digit: ";
     do {

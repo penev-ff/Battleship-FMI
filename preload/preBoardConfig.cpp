@@ -172,13 +172,10 @@ bool loadBoard(int board[BOARD_SIZE][BOARD_SIZE]) {
 
   // Validating
   clearBoard(board);
-  printBoard(board);
   bool isLoadedBoardValid;
   std::string line;
   unsigned lineCount = 0;
   while (getline(choseBoard, line) && lineCount <= 9) {
-    std::cout << line << std::endl;
-
     if ((line == "" && lineCount <= 9) || line.size() < 9) {
       corruptedFileErrors(4);
       clearBoard(board);
