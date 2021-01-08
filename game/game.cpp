@@ -79,55 +79,120 @@ void showMyBoard(char currentPlayer[],
   std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 }
 
+void printBoardToAttack(char currentPlayer[],
+                        int opponentBoard[BOARD_SIZE][BOARD_SIZE]) {
+  system("cls");
+  std::cout << currentPlayer << " it's your turn to attack.\n";
+  std::cout << "Your opponent board (hid):" << std::endl;
+  bool isHid = true;
+  printBoard(opponentBoard, isHid);
+}
+
 bool attack(char currentPlayer[], int opponentBoard[BOARD_SIZE][BOARD_SIZE]) {
 
   bool hit = false;
-
+  int lastHitRow, lastHitCol;
   do {
-    system("cls");
-    std::cout << currentPlayer << " it's your turn to attack.\n";
-    std::cout << "Your opponent board (hid):" << std::endl;
-    const bool isHid = true;
-    printBoard(opponentBoard, isHid);
-    std::cout << "Q - if you want to return:\n";
+    printBoardToAttack(currentPlayer, opponentBoard);
+    char opt = '2';
 
-    std::cout << "Enter coordinates you want to attack:\n";
-    char letterCoordinateChar, digitCoordinateChar;
-    do {
+    if (hit) {
+      std::cout << "Last time you hit your opponent on "
+                << (char)('A' + lastHitCol) << lastHitRow << "\n";
+      std::cout << "1. Attack based on last hit\n"
+                   "2. Attack with new coordinates set\n";
+      do {
+        std::cin >> opt;
+        std::cin.sync();
+      } while (opt < '1' || opt > '2');
+    }
+
+    int attackRow, attackCol;
+
+    if (hit && opt == '1') {
+      bool isValid = false;
+      do {
+        bool isDirectionValid = false;
+        char direction;
+        do {
+          std::cout << "Last hit coordinate: " << (char)('A' + lastHitCol)
+                    << lastHitRow << std::endl;
+          std::cout << "Enter direction l/r/u/d: ";
+          std::cin >> direction;
+          std::cin.sync();
+          isDirectionValid = direction != 'l' || direction != 'r' ||
+                             direction != 'u' || direction != 'd';
+        } while (!isDirectionValid);
+
+        switch (direction) {
+        case 'l':
+          attackRow = lastHitRow;
+          if (lastHitCol - 1 >= 0) {
+            attackCol = lastHitCol - 1;
+            isValid = true;
+          }
+          break;
+        case 'r':
+          attackRow = lastHitRow;
+
+          if (lastHitCol + 1 <= 9) {
+            attackCol = lastHitCol + 1;
+            isValid = true;
+          }
+          break;
+        case 'u':
+          attackCol = lastHitCol;
+          if (lastHitRow - 1 >= 0) {
+            attackRow = lastHitRow - 1;
+            isValid = true;
+          }
+          break;
+        case 'd':
+          attackCol = lastHitCol;
+          if (lastHitRow + 1 <= 9) {
+            attackRow = lastHitRow + 1;
+            isValid = true;
+          }
+          break;
+        }
+
+      } while (!isValid);
+
+    } else {
+      std::cout << "Enter coordinates you want to attack:\n";
+      char letterCoordinateChar, digitCoordinateChar;
       std::cout << "Capital letter: ";
-      std::cin >> letterCoordinateChar;
-      std::cin.sync();
+      do {
+        std::cin >> letterCoordinateChar;
+        std::cin.sync();
 
-      if (letterCoordinateChar == 'Q') {
-        return false;
-      }
+        if (letterCoordinateChar < 'A' || letterCoordinateChar > 'J') {
+          std::cout
+              << "Invalid input! Please enter a valid capital letter [A, J]: ";
+        }
 
-      if (letterCoordinateChar < 'A' || letterCoordinateChar > 'J') {
-        std::cout
-            << "Invalid input! Please enter a valid capital letter [A, J]: ";
-      }
+      } while (letterCoordinateChar < 'A' || letterCoordinateChar > 'J');
 
-    } while (letterCoordinateChar < 'A' || letterCoordinateChar > 'J');
-
-    do {
       std::cout << "Digit: ";
-      std::cin >> digitCoordinateChar;
-      std::cin.sync();
+      do {
+        std::cin >> digitCoordinateChar;
+        std::cin.sync();
 
-      if (digitCoordinateChar < '0' || digitCoordinateChar > '9') {
-        std::cout << "Invalid input! Please enter a valid digit [0, 9]: ";
-      }
+        if (digitCoordinateChar < '0' || digitCoordinateChar > '9') {
+          std::cout << "Invalid input! Please enter a valid digit [0, 9]: ";
+        }
 
-    } while (digitCoordinateChar < '0' || digitCoordinateChar > '9');
+      } while (digitCoordinateChar < '0' || digitCoordinateChar > '9');
 
-    int attackRow = digitCoordinateChar - '0';
-    int attackCol = letterCoordinateChar - 'A';
+      attackRow = digitCoordinateChar - '0';
+      attackCol = letterCoordinateChar - 'A';
+    }
 
     if (opponentBoard[attackRow][attackCol] == 0) {
       system("cls");
       opponentBoard[attackRow][attackCol] = -1;
       std::cout << "Your opponent board (hid):" << std::endl;
-      printBoard(opponentBoard, isHid);
+      printBoard(opponentBoard, true);
       showAttackMessage(1);
       return true;
     }
@@ -136,8 +201,10 @@ bool attack(char currentPlayer[], int opponentBoard[BOARD_SIZE][BOARD_SIZE]) {
       system("cls");
       opponentBoard[attackRow][attackCol] = 2;
       std::cout << "Your opponent board (hid):" << std::endl;
-      printBoard(opponentBoard, isHid);
+      printBoard(opponentBoard, true);
       showAttackMessage(2);
+      lastHitRow = attackRow;
+      lastHitCol = attackCol;
       hit = true;
     }
   } while (hit);
@@ -149,33 +216,27 @@ void playTurn(char currentPlayer[], int playerBoard[BOARD_SIZE][BOARD_SIZE],
 
   bool finishedTurn = false;
 
-  do
-  {
-    system("cls");
-  char option;
   do {
-    std::cout << currentPlayer << " it's your turn to attack.\n";
-    std::cout << "Your opponent board (hid):" << std::endl;
-    bool isHid = true;
-    printBoard(opponentBoard, isHid);
-    std::cout << "Select an option:\n"
-                 "1. Show your board\n"
-                 "2. Attack opponent\n";
+    char option;
+    do {
+      printBoardToAttack(currentPlayer, opponentBoard);
+      std::cout << "Select an option:\n"
+                   "1. Show your board\n"
+                   "2. Attack opponent\n";
 
-    std::cin >> option;
-    std::cin.sync();
-  } while (option < '1' || option > '2');
+      std::cin >> option;
+      std::cin.sync();
+    } while (option < '1' || option > '2');
 
-  switch (option) {
-  case '1':
-    showMyBoard(currentPlayer, playerBoard);
-    break;
-  case '2':
-    finishedTurn = attack(currentPlayer, opponentBoard);
-    break;
-  }
+    switch (option) {
+    case '1':
+      showMyBoard(currentPlayer, playerBoard);
+      break;
+    case '2':
+      finishedTurn = attack(currentPlayer, opponentBoard);
+      break;
+    }
   } while (!finishedTurn);
-        
 }
 
 void game(char player1Name[], int player1Board[BOARD_SIZE][BOARD_SIZE],
