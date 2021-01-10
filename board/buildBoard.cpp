@@ -1,3 +1,18 @@
+/**
+*  
+* Solution to course project # 5
+* Introduction to programming course
+* Faculty of Mathematics and Informatics of Sofia University
+* Winter semester 2020/2021
+*
+* @author Ivan Penev
+* @idnumber 62535
+* @compiler GCC
+*
+* Build board - place and edit a ship, ships log 
+*
+*/
+
 #include "buildBoard.h"
 #include "../preload/preBoardConfig.h"
 #include "positionValidator.h"

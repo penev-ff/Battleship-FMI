@@ -1,3 +1,18 @@
+/**
+*  
+* Solution to course project # 5
+* Introduction to programming course
+* Faculty of Mathematics and Informatics of Sofia University
+* Winter semester 2020/2021
+*
+* @author Ivan Penev
+* @idnumber 62535
+* @compiler GCC
+*
+* File functions and configurations for using preset boards
+*
+*/
+
 #include "./preBoardConfig.h"
 #include "../board/board.h"
 #include "../board/buildBoard.h"
